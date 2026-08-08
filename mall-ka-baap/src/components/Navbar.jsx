@@ -1,15 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Search, Heart, User, ShoppingCart, Menu, X} from 'lucide-react';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+const useClickOutside = (handler) => {
+    const domNode = useRef();
+
+    useEffect(() => {
+        const maybeHandler = (event) => {
+            if(domNode.current && !domNode.current.contains(event.target)) {
+                handler();
+            }
+        };
+
+        document.addEventListener("mousedown",maybeHandler);
+
+        return () => {
+            document.removeEventListener("mousedown",maybeHandler);
+        };
+    }, [handler]);
+
+    return domNode;
+};
 
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const isLoggedIn = false;
+
+    const handleProtectedAction = (e, path) => {
+        e.preventDefault();
+        if(!isLoggedIn){
+            navigate('/login');
+        }
+        else{
+            navigate(path);
+        }
+    }
 
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchOpen,setIsSearchOpen] = useState(false);
+
+    const searchContainRef = useClickOutside(() => {
+        setIsSearchOpen(false);
+    });
 
     const toggleMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -35,7 +72,7 @@ const Navbar = () => {
         e.preventDefault();
         console.log("Searching for:", searchQuery)
 
-
+        setIsSearchOpen(false);
     }
 
     return(
@@ -47,7 +84,7 @@ const Navbar = () => {
                         className="text-gray-600 hover:text-orange-500 transition-colors"
                         aria-label="Toggle Mobile Menu"
                     >
-                        {isMobileMenuOpen ? <X size={25}/> : <Menu size={25}/>}
+                       {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
 
@@ -68,32 +105,51 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center space-x-3 lg:space-x-5 text-gray-600">
-                    <form
-                        onSubmit={handleSearch}
-                        className="flex items-center border-b border-gray-300 focus-within:border-orange-500 transition-colors pb-1"
-                    >
-                        <input 
-                            type="text"
-                            placeholder="Search..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-transparent outline-none text-sm w-20 sm:w-24 md:w-28 lg:w-40 text-gray-700 placeholder-gray-400"
-                        />
-                    </form>
+                    <div ref={searchContainRef} className="flex items-center">
+                        {isSearchOpen ? (
+                            <form 
+                                onSubmit={handleSearch}
+                                className="flex items-center"
+                            >
+                                <input 
+                                    type="text"
+                                    placeholder="Search..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    autoFocus
+                                    className="bg-transparent outline-none text-sm w-24 sm:w-28 lg:w-40 text-gray-700 placeholder-gray-400"
+                                />
 
-                    <button type="submit" className="hover:text-orange-500 transition-colors ml-1" aria-label="Submit Search">
-                        <Search className="w-5 h-5 lg:w-5 lg:h-5" strokeWidth={2}/>
-                    </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSearchOpen(false)}
+                                    className="hover:text-red-500 transition-colors ml-1 text-gray-400"
+                                    aria-label="Close Search"
+                                >
+                                    <X className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2}/>
+                                </button>
+                            </form>
+                        ) : (
+                            <button
+                                onClick={() => setIsSearchOpen(true)}
+                                className="hover:text-orange-500 transition-colors flex items-center h-full"
+                                aria-label="Open Search"
+                            >
+                                <Search className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
+                            </button>
+                        )}
+                    </div>
 
-                    <button className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="Wishlist">
+
+                    <button onClick = {(e) => handleProtectedAction(e, '/wishlist')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="Wishlist">
                         <Heart className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
                     </button>
 
-                    <button className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="User Profile">
+                    <button onClick = {(e) => handleProtectedAction(e, '/profile')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="User Profile">
                         <User className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
                     </button>
 
-                    <button className="hover:text-orange-500 transition-colors" aria-label="Add To Cart">
+                    <button onClick = {(e) => handleProtectedAction(e, '/cart')} className="hover:text-orange-500 transition-colors" aria-label="Add To Cart">
                         <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
                     </button>
                 </div>

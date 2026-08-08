@@ -6,6 +6,8 @@ import AboutUs from './pages/AboutUs';
 import Shop from './pages/Shop';
 import Categories from './pages/Categories';
 import Contact from './pages/Contact';
+import Login from './pages/Login';
+import Register from "./pages/Register";
 
 const App = () => {
     return (
@@ -16,6 +18,8 @@ const App = () => {
                 <Route path="/shop" element={<Shop/>}/>
                 <Route path="/categories" element={<Categories/>}/>
                 <Route path="/contact" element={<Contact/>}/>
+                <Route path="/login" element={<Login />}/>
+                <Route path="/register" element={<Register />}/>
             </Routes>
         </Router>
     );
