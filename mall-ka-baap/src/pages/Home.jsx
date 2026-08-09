@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Category from "../components/Category";
 import MarqueeBanner from "../components/MarqueeBanner";
+import ProductGrid from "../components/ProductGrid";
 
 const Home = () => {
     return(
@@ -11,6 +12,7 @@ const Home = () => {
             <Hero/>
             <Category/>
             <MarqueeBanner/>
+            <ProductGrid/>
         </div>
     )
 }

@@ -1,26 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Search, Heart, User, ShoppingCart, Menu, X} from 'lucide-react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
-const useClickOutside = (handler) => {
-    const domNode = useRef();
-
-    useEffect(() => {
-        const maybeHandler = (event) => {
-            if(domNode.current && !domNode.current.contains(event.target)) {
-                handler();
-            }
-        };
-
-        document.addEventListener("mousedown",maybeHandler);
-
-        return () => {
-            document.removeEventListener("mousedown",maybeHandler);
-        };
-    }, [handler]);
-
-    return domNode;
-};
+import { useClickOutside } from '../hooks/useClickOutside';
 
 
 const Navbar = () => {
