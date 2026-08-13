@@ -4,6 +4,10 @@ import Hero from '../components/Hero';
 import Category from "../components/Category";
 import MarqueeBanner from "../components/MarqueeBanner";
 import ProductGrid from "../components/ProductGrid";
+import PromoSection from "../components/PromoSection";
+import ShopByGender from "../components/ShopByGender";
+import ShopCategory from "../components/ShopCategory";
+import Footer from "../components/Footer";
 
 const Home = () => {
     return(
@@ -13,6 +17,10 @@ const Home = () => {
             <Category/>
             <MarqueeBanner/>
             <ProductGrid/>
+            <PromoSection/>
+            <ShopByGender/>
+            <ShopCategory/>
+            <Footer/>
         </div>
     )
 }

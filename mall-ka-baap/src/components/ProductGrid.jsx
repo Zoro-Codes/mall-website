@@ -173,7 +173,7 @@ const ProductGrid = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [currentPage, setCurrentPage] = useState(1);
     const dropdownRef = useClickOutside(() => setIsDropdownOpen(false));
-    const itemPerPage=4;
+    const itemPerPage=8;
 
     const categories = [
         {id: 'ALL', label: 'ALL', icon: null},
