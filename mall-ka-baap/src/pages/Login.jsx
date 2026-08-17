@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { Package, Heart, Sparkles, Zap, Mail, Lock, Eye, EyeOff, ShoppingBag } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    login();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -68,7 +77,7 @@ const Login = () => {
               Don't have an account? <Link to="/register" className="text-orange-500 hover:underline font-semibold">Sign up free &rarr;</Link>
             </p>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Email Address</label>
                 <div className="relative">
@@ -77,6 +86,7 @@ const Login = () => {
                   </div>
                   <input 
                     type="email" 
+                    required
                     placeholder="your@email.com" 
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -94,6 +104,7 @@ const Login = () => {
                   </div>
                   <input 
                     type={showPassword ? "text" : "password"}
+                    required
                     placeholder="Enter your password" 
                     className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />

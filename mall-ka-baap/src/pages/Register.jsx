@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { Zap, Mail, Lock, Eye, EyeOff, ShoppingBag, User, Phone, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    login();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -69,7 +78,7 @@ const Register = () => {
               Already have one? <Link to="/login" className="text-orange-500 hover:underline font-semibold">Sign in &rarr;</Link>
             </p>
 
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleRegister}>
 
               <div className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 sm:space-x-4">
                 <div className="flex-1">
@@ -80,6 +89,7 @@ const Register = () => {
                     </div>
                     <input 
                       type="text" 
+                      required
                       placeholder="Uttam" 
                       className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                     />
@@ -93,6 +103,7 @@ const Register = () => {
                     </div>
                     <input 
                       type="text" 
+                      required
                       placeholder="Gupta" 
                       className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                     />
@@ -108,6 +119,7 @@ const Register = () => {
                   </div>
                   <input 
                     type="email" 
+                    required
                     placeholder="you@email.com" 
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -136,6 +148,7 @@ const Register = () => {
                   </div>
                   <input 
                     type={showPassword ? "text" : "password"}
+                    required
                     placeholder="Min 6 characters" 
                     className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -157,6 +170,7 @@ const Register = () => {
                   </div>
                   <input 
                     type={showConfirmPassword ? "text" : "password"}
+                    required
                     placeholder="Repeat your password" 
                     className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />

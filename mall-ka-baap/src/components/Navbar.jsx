@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Search, Heart, User, ShoppingCart, Menu, X} from 'lucide-react';
+import { Search, Heart, User, ShoppingCart, Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useClickOutside } from '../hooks/useClickOutside';
-
+import { useAuth } from '../context/AuthContext'; 
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,20 +10,19 @@ const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const isLoggedIn = false;
+    const { isAuthenticated } = useAuth(); 
 
     const handleProtectedAction = (e, path) => {
         e.preventDefault();
-        if(!isLoggedIn){
+        if (!isAuthenticated) {
             navigate('/login');
-        }
-        else{
+        } else {
             navigate(path);
         }
     }
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [isSearchOpen,setIsSearchOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const searchContainRef = useClickOutside(() => {
         setIsSearchOpen(false);
@@ -34,7 +33,7 @@ const Navbar = () => {
     };
 
     const getLinkClass = (path) => {
-        const baseClass = 'transistion-colors font-semibold tracking-wide'
+        const baseClass = 'transition-colors font-semibold tracking-wide';
 
         return location.pathname === path
             ? `${baseClass} text-orange-500`
@@ -51,12 +50,11 @@ const Navbar = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        console.log("Searching for:", searchQuery)
-
+        console.log("Searching for:", searchQuery);
         setIsSearchOpen(false);
     }
 
-    return(
+    return (
         <nav className="w-full bg-white shadow-sm relative z-50">
             <div className="px-4 md:px-4 lg:px-8 py-4 flex justify-between items-center">
                 <div className="md:hidden flex items-center">
@@ -65,16 +63,18 @@ const Navbar = () => {
                         className="text-gray-600 hover:text-orange-500 transition-colors"
                         aria-label="Toggle Mobile Menu"
                     >
-                       {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
 
                 <div className="flex justify-center flex-1 md:flex-none md:justify-start cursor-pointer">
-                    <img 
-                        src="https://res.cloudinary.com/ni0rf0la/image/upload/v1785847384/logo_fezuvk.png" 
-                        alt="Navbar Logo"
-                        className="h-10 sm:h-12 w-auto object-contain"
-                    />
+                    <Link to="/">
+                        <img 
+                            src="https://res.cloudinary.com/ni0rf0la/image/upload/v1785847384/logo_fezuvk.png" 
+                            alt="Navbar Logo"
+                            className="h-10 sm:h-12 w-auto object-contain"
+                        />
+                    </Link>
                 </div>
 
                 <div className="hidden md:flex flex-1 justify-center space-x-4 lg:space-x-8 text-sm font-semibold tracking-wide text-gray-600">
@@ -121,17 +121,22 @@ const Navbar = () => {
                         )}
                     </div>
 
-
-                    <button onClick = {(e) => handleProtectedAction(e, '/wishlist')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="Wishlist">
+                    <button onClick={(e) => handleProtectedAction(e, '/wishlist')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="Wishlist">
                         <Heart className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
                     </button>
 
-                    <button onClick = {(e) => handleProtectedAction(e, '/profile')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="User Profile">
+                    <button onClick={(e) => handleProtectedAction(e, '/account')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="User Profile">
                         <User className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
                     </button>
 
-                    <button onClick = {(e) => handleProtectedAction(e, '/cart')} className="hover:text-orange-500 transition-colors" aria-label="Add To Cart">
+                    <button onClick={(e) => handleProtectedAction(e, '/cart')} className="hover:text-orange-500 transition-colors relative" aria-label="Add To Cart">
                         <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
+
+                        {isAuthenticated && (
+                            <span className="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white">
+                                3
+                            </span>
+                        )}
                     </button>
                 </div>
             </div>
@@ -146,11 +151,17 @@ const Navbar = () => {
                         <Link to="/contact" onClick={toggleMenu} className={getMobileLinkClass("/contact")}>CONTACT</Link>
 
                         <div className="border-t border-gray-100 mt-2 pt-2 sm:hidden flex justify-around">
-                            <button className="flex items-center text-gray-600 hover:text-orange-500 font-medium">
+                            <button 
+                                onClick={(e) => { handleProtectedAction(e, '/wishlist'); toggleMenu(); }} 
+                                className="flex items-center text-gray-600 hover:text-orange-500 font-medium"
+                            >
                                 <Heart size={15} className="mr-2"/> Wishlist
                             </button>
 
-                            <button className="flex items-center text-gray-600 hover:text-orange-500 font-medium">
+                            <button 
+                                onClick={(e) => { handleProtectedAction(e, '/account'); toggleMenu(); }} 
+                                className="flex items-center text-gray-600 hover:text-orange-500 font-medium"
+                            >
                                 <User size={15} className="mr-2"/> Profile
                             </button>
                         </div>
@@ -158,7 +169,7 @@ const Navbar = () => {
                 </div>
             )}
         </nav>
-    )
+    );
 }
 
 export default Navbar;
