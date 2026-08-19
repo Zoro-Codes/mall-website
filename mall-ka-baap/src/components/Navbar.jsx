@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Search, Heart, User, ShoppingCart, Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useClickOutside } from '../hooks/useClickOutside';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
+import { useShop } from "../context/ShopContext";
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,7 +11,8 @@ const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { isAuthenticated } = useAuth(); 
+    const { isAuthenticated } = useAuth();
+    const { cart, wishlist } = useShop();
 
     const handleProtectedAction = (e, path) => {
         e.preventDefault();
@@ -53,6 +55,9 @@ const Navbar = () => {
         console.log("Searching for:", searchQuery);
         setIsSearchOpen(false);
     }
+
+    const cartItemCount = cart.reduce((total ,item) => total + item.quantity, 0)
+    const wishlistItemCount = wishlist.length;
 
     return (
         <nav className="w-full bg-white shadow-sm relative z-50">
@@ -121,8 +126,13 @@ const Navbar = () => {
                         )}
                     </div>
 
-                    <button onClick={(e) => handleProtectedAction(e, '/wishlist')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="Wishlist">
+                    <button onClick={(e) => handleProtectedAction(e, '/wishlist')} className="hover:text-orange-500 transition-colors relative hidden sm:block" aria-label="Wishlist">
                         <Heart className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
+                        {isAuthenticated && wishlistItemCount > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[10px] font-bold w-[15px] h[15px] rounded-full flex items-center justify-center border-2 border-whte">
+                                {wishlistItemCount}
+                            </span>
+                        )}
                     </button>
 
                     <button onClick={(e) => handleProtectedAction(e, '/account')} className="hover:text-orange-500 transition-colors hidden sm:block" aria-label="User Profile">
@@ -131,10 +141,9 @@ const Navbar = () => {
 
                     <button onClick={(e) => handleProtectedAction(e, '/cart')} className="hover:text-orange-500 transition-colors relative" aria-label="Add To Cart">
                         <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={2}/>
-
-                        {isAuthenticated && (
-                            <span className="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white">
-                                3
+                        {isAuthenticated && cartItemCount > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[10px] font-bold w-[15px] h[15px] rounded-full flex items-center justify-center border-2 border-whte">
+                                {cartItemCount}
                             </span>
                         )}
                     </button>

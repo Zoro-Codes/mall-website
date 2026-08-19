@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef, React } from "react";
 import {ChevronDown, Search, Grid, List, Heart, ShoppingBag, User, Baby, Sparkles, Crown, Star, ChevronLeft, ChevronRight} from 'lucide-react';
 import { useClickOutside } from '../hooks/useClickOutside';
+import { useShop } from "../context/ShopContext";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const products = [
     {
@@ -172,6 +175,10 @@ const ProductGrid = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [viewMode, setViewMode] = useState('grid');
     const [currentPage, setCurrentPage] = useState(1);
+    const { addToCart, toggleWishlist, isInWishlist } = useShop();
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
     const dropdownRef = useClickOutside(() => setIsDropdownOpen(false));
     const itemPerPage=8;
 
@@ -220,6 +227,14 @@ const ProductGrid = () => {
         (currentPage - 1) * itemPerPage,
         currentPage * itemPerPage
     );
+
+    const handleAction = (action, product) => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        } else {
+            action(product);
+        }
+    }
 
     return(
         <section className="w-full py-12 px-4 sm:px-8 lg:px-12 max-w-[1400px] mx-auto">
@@ -349,8 +364,11 @@ const ProductGrid = () => {
                         {product.discount}
                         </div>
 
-                        <button className="absolute right-4 bottom-[4.5rem] bg-white p-2 rounded-full shadow-md text-gray-400 hover:text-orange-500 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 translate-y-2 group-hover:translate-y-0">
-                        <Heart size={16} strokeWidth={2.5} />
+                        <button 
+                            onClick={() => handleAction(toggleWishlist, product)}
+                            className="absolute right-4 bottom-[4.5rem] bg-white p-2 rounded-full shadow-md text-gray-400 hover:text-orange-500 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 translate-y-2 group-hover:translate-y-0"
+                        >
+                            <Heart size={16} strokeWidth={2.5} className={isInWishlist(product.id) ? "fill-current" : ""}/>
                         </button>
 
                         <div className="absolute bottom-0 left-0 right-0 bg-[#222] text-white p-3 flex justify-center items-center transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 overflow-x-auto">
@@ -407,9 +425,12 @@ const ProductGrid = () => {
                         </span>
                         </div>
 
-                        <button className={`mt-auto bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-3.5 rounded-xl flex items-center justify-center transition-colors shadow-sm w-full`}>
-                        <ShoppingBag size={14} strokeWidth={2.5} className="mr-2" />
-                        ADD TO CART
+                        <button
+                            onClick={() => handleAction(addToCart, product)}
+                            className={`mt-auto bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold py-3.5 rounded-xl flex items-center justify-center transition-colors shadow-sm w-full`}
+                        >
+                            <ShoppingBag size={14} strokeWidth={2.5} className="mr-2" />
+                            ADD TO CART
                         </button>
                     </div>
                     </div>
