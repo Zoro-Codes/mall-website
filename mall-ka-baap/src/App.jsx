@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import UserAccount from "./pages/UserAccount"; 
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
+import ProductDetails from './pages/ProductDetails';
 import { ShopProvider } from "./context/ShopContext";
 
 const App = () => {
@@ -31,6 +32,7 @@ const App = () => {
                         <Route path="/account" element={<UserAccount />}/>
                         <Route path="/wishlist" element={<Wishlist />}/>
                         <Route path="/cart" element={<Cart />}/>
+                        <Route path="/product/:id" element={<ProductDetails />} />
                     </Routes>
                 </Router>
             </ShopProvider>

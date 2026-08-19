@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShoppingBag, Star, Heart, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const collections = [
   {
@@ -187,7 +188,7 @@ const ShopByGender = () => {
                 </div>
               </div>
 
-              <div className={`relative ${col.theme.lightBg} aspect-[4/5] flex items-center justify-center overflow-hidden`}>
+              <Link to={`/product/${col.product.id || 1}`} className={`relative ${col.theme.lightBg} aspect-[4/5] flex items-center justify-center overflow-hidden block cursor-pointer`}>
 
                 <div 
                   className="absolute inset-0 z-0 opacity-20 pointer-events-none" 
@@ -207,7 +208,7 @@ const ShopByGender = () => {
                   </div>
                 )}
 
-                <button className={`absolute right-4 bottom-[4.5rem] bg-white p-2 rounded-full shadow-md text-gray-400 transition-all duration-300 z-20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 ${col.theme.text}`}>
+                <button onClick={(e) => e.preventDefault()} className={`absolute right-4 bottom-[4.5rem] bg-white p-2 rounded-full shadow-md text-gray-400 transition-all duration-300 z-20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 ${col.theme.text}`}>
                   <Heart size={16} strokeWidth={2.5} />
                 </button>
 
@@ -226,16 +227,19 @@ const ShopByGender = () => {
                   alt={col.product.title} 
                   className="relative z-0 w-full h-full object-contain p-4 mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                 />
-              </div>
+              </Link>
 
               <div className="p-4 flex flex-col flex-grow bg-white">
                 <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                   {col.product.category}
                 </span>
                 
-                <h3 className="text-sm font-bold text-gray-900 leading-tight mb-3 line-clamp-1">
-                  {col.product.title}
-                </h3>
+                <Link 
+                    to={`/product/${col.product.id || 1}`}
+                    className="text-sm font-bold text-gray-900 leading-tight mb-3 line-clamp-1 hover:text-orange-500 transition-colors block"
+                >
+                    {col.product.title}
+                </Link>
 
                 <div className={`inline-flex items-center self-start px-2 py-1 ${col.theme.lightBg} rounded text-[9px] font-semibold text-gray-600 border ${col.theme.lightBorder} mb-3`}>
                   <span className={`w-1 h-1 rounded-full ${col.theme.primary} mr-1.5`}></span>

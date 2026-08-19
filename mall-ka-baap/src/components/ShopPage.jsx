@@ -5,10 +5,11 @@ import {
     LayoutGrid, Lightbulb, SlidersHorizontal
 } from 'lucide-react';
 
-// Note: Ensure you have useClickOutside hook in your project
-// import { useClickOutside } from '../hooks/useClickOutside'; 
+import { Link } from 'react-router-dom';
+import { useShop } from "../context/ShopContext";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-// Mock implementation of useClickOutside if you don't have it handy
 const useClickOutside = (handler) => {
     const domNode = useRef();
     useEffect(() => {
@@ -23,160 +24,160 @@ const useClickOutside = (handler) => {
     return domNode;
 };
 
-const products = [
-    {
-        id: 1,
-        badgeText: "NEW ARRIVAL",
-        badgeColor: "bg-green-600",
-        discount: "-32%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077841/Square_Neck_Textured_Waist-Cinching_Maroon_Dress_vheg55.webp",
-        brand: "AURELIA",
-        title: "Cotton Blend Co-ord Set",
-        material: "100% Cotton",
-        rating: 4,
-        reviews: 128,
-        price: 1299,
-        originalPrice: 1899,
-        savings: 300,
-        category: "women",
-        ethnic: false,
-        western: true,
-        sizes: ['XS', 'S', 'M', 'L', 'XL']
-    },
-    {
-        id: 2,
-        badgeText: "SALE",
-        badgeColor: "bg-orange-500",
-        discount: "-33%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776078520/images_6_vfn6rc.jpg",
-        brand: "BIBA",
-        title: "Embroidered Frock",
-        material: "Georgette",
-        rating: 4,
-        reviews: 75,
-        price: 2150,
-        originalPrice: 3200,
-        savings: 1050,
-        category: "women",
-        ethnic: false,
-        western: true,
-        sizes: ['S', 'M', 'L', 'XL', 'XXL']
-    },
-    {
-        id: 3,
-        badgeText: "BESTSELLER",
-        badgeColor: "bg-black",
-        discount: "-31%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077580/images_4_rs50b4.jpg",
-        brand: "FABINDIA",
-        title: "Slim Fit Stretch Jeans",
-        material: "Cotton Blend",
-        rating: 4,
-        reviews: 89,
-        price: 899,
-        originalPrice: 1299,
-        savings: 400,
-        category: "men",
-        ethnic: false,
-        western: true,
-        sizes: ['28', '30', '32', '34', '36']
-    },
-    {
-        id: 4,
-        badgeText: "TRENDING",
-        badgeColor: "bg-[#e84c3d]",
-        discount: "-32%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077580/images_5_f8olir.jpg",
-        brand: "MANYAVAR",
-        title: "Tropical Rayon Camp Shirt",
-        material: "Rayon",
-        rating: 4,
-        reviews: 204,
-        price: 749,
-        originalPrice: 1099,
-        savings: 350,
-        category: "men",
-        ethnic: false,
-        western: true,
-        sizes: ['S', 'M', 'L', 'XL']
-    },
-    {
-        id: 5,
-        badgeText: "NEW ARRIVAL",
-        badgeColor: "bg-green-600",
-        discount: "-22%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776152849/kidsno.1_y5j49b.png",
-        brand: "NARI KIDS",
-        title: "Kids Dungaree Playsuit",
-        material: "Super Cotton",
-        rating: 4,
-        reviews: 42,
-        price: 599,
-        originalPrice: 799,
-        savings: 200,
-        category: "kids",
-        ethnic: true,
-        western: true,
-        sizes: ['2Y', '3Y', '4Y', '5Y']
-    },
-    {
-        id: 6,
-        badgeText: "SALE",
-        badgeColor: "bg-orange-500",
-        discount: "-28%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776078520/k2ujc_512_yf0fzu.webp",
-        brand: "W FOR WOMAN",
-        title: "Palazzo Sharara Set",
-        material: "Silk Blend",
-        rating: 4,
-        reviews: 56,
-        price: 1799,
-        originalPrice: 2499,
-        savings: 700,
-        category: "women",
-        ethnic: true,
-        western: false,
-        sizes: ['XS', 'S', 'M', 'L']
-    },
-    {
-        id: 7,
-        badgeText: "TRENDING",
-        badgeColor: "bg-[#e84c3d]",
-        discount: "-31%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077580/images_3_prsjj5.jpg",
-        brand: "LEVI'S",
-        title: "Flared Denim Jeans",
-        material: "90% Denim",
-        rating: 4,
-        reviews: 152,
-        price: 1499,
-        originalPrice: 2199,
-        savings: 700,
-        category: "kids",
-        ethnic: false,
-        western: true,
-        sizes: ['26', '28', '30', '32']
-    },
-    {
-        id: 8,
-        badgeText: "NEW ARRIVAL",
-        badgeColor: "bg-green-600",
-        discount: "-34%",
-        image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776078689/three-elegant-mens-suits-different-colors-perfect-business-formal-events-highquality-fabrics-tailoring_191095-85761_ilaw9v.avif",
-        brand: "MANYAVAR",
-        title: "Bandhgala Nehru Jacket",
-        material: "Silk",
-        rating: 4,
-        reviews: 67,
-        price: 3299,
-        originalPrice: 4999,
-        savings: 1700,
-        category: "men",
-        ethnic: true,
-        western: false,
-        sizes: ['38', '40', '42', '44']
-    }
-];
+// const products = [
+//     {
+//         id: 1,
+//         badgeText: "NEW ARRIVAL",
+//         badgeColor: "bg-green-600",
+//         discount: "-32%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077841/Square_Neck_Textured_Waist-Cinching_Maroon_Dress_vheg55.webp",
+//         brand: "AURELIA",
+//         title: "Cotton Blend Co-ord Set",
+//         material: "100% Cotton",
+//         rating: 4,
+//         reviews: 128,
+//         price: 1299,
+//         originalPrice: 1899,
+//         savings: 300,
+//         category: "women",
+//         ethnic: false,
+//         western: true,
+//         sizes: ['XS', 'S', 'M', 'L', 'XL']
+//     },
+//     {
+//         id: 2,
+//         badgeText: "SALE",
+//         badgeColor: "bg-orange-500",
+//         discount: "-33%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776078520/images_6_vfn6rc.jpg",
+//         brand: "BIBA",
+//         title: "Embroidered Frock",
+//         material: "Georgette",
+//         rating: 4,
+//         reviews: 75,
+//         price: 2150,
+//         originalPrice: 3200,
+//         savings: 1050,
+//         category: "women",
+//         ethnic: false,
+//         western: true,
+//         sizes: ['S', 'M', 'L', 'XL', 'XXL']
+//     },
+//     {
+//         id: 3,
+//         badgeText: "BESTSELLER",
+//         badgeColor: "bg-black",
+//         discount: "-31%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077580/images_4_rs50b4.jpg",
+//         brand: "FABINDIA",
+//         title: "Slim Fit Stretch Jeans",
+//         material: "Cotton Blend",
+//         rating: 4,
+//         reviews: 89,
+//         price: 899,
+//         originalPrice: 1299,
+//         savings: 400,
+//         category: "men",
+//         ethnic: false,
+//         western: true,
+//         sizes: ['28', '30', '32', '34', '36']
+//     },
+//     {
+//         id: 4,
+//         badgeText: "TRENDING",
+//         badgeColor: "bg-[#e84c3d]",
+//         discount: "-32%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077580/images_5_f8olir.jpg",
+//         brand: "MANYAVAR",
+//         title: "Tropical Rayon Camp Shirt",
+//         material: "Rayon",
+//         rating: 4,
+//         reviews: 204,
+//         price: 749,
+//         originalPrice: 1099,
+//         savings: 350,
+//         category: "men",
+//         ethnic: false,
+//         western: true,
+//         sizes: ['S', 'M', 'L', 'XL']
+//     },
+//     {
+//         id: 5,
+//         badgeText: "NEW ARRIVAL",
+//         badgeColor: "bg-green-600",
+//         discount: "-22%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776152849/kidsno.1_y5j49b.png",
+//         brand: "NARI KIDS",
+//         title: "Kids Dungaree Playsuit",
+//         material: "Super Cotton",
+//         rating: 4,
+//         reviews: 42,
+//         price: 599,
+//         originalPrice: 799,
+//         savings: 200,
+//         category: "kids",
+//         ethnic: true,
+//         western: true,
+//         sizes: ['2Y', '3Y', '4Y', '5Y']
+//     },
+//     {
+//         id: 6,
+//         badgeText: "SALE",
+//         badgeColor: "bg-orange-500",
+//         discount: "-28%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776078520/k2ujc_512_yf0fzu.webp",
+//         brand: "W FOR WOMAN",
+//         title: "Palazzo Sharara Set",
+//         material: "Silk Blend",
+//         rating: 4,
+//         reviews: 56,
+//         price: 1799,
+//         originalPrice: 2499,
+//         savings: 700,
+//         category: "women",
+//         ethnic: true,
+//         western: false,
+//         sizes: ['XS', 'S', 'M', 'L']
+//     },
+//     {
+//         id: 7,
+//         badgeText: "TRENDING",
+//         badgeColor: "bg-[#e84c3d]",
+//         discount: "-31%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776077580/images_3_prsjj5.jpg",
+//         brand: "LEVI'S",
+//         title: "Flared Denim Jeans",
+//         material: "90% Denim",
+//         rating: 4,
+//         reviews: 152,
+//         price: 1499,
+//         originalPrice: 2199,
+//         savings: 700,
+//         category: "kids",
+//         ethnic: false,
+//         western: true,
+//         sizes: ['26', '28', '30', '32']
+//     },
+//     {
+//         id: 8,
+//         badgeText: "NEW ARRIVAL",
+//         badgeColor: "bg-green-600",
+//         discount: "-34%",
+//         image: "https://res.cloudinary.com/dquki4xol/image/upload/v1776078689/three-elegant-mens-suits-different-colors-perfect-business-formal-events-highquality-fabrics-tailoring_191095-85761_ilaw9v.avif",
+//         brand: "MANYAVAR",
+//         title: "Bandhgala Nehru Jacket",
+//         material: "Silk",
+//         rating: 4,
+//         reviews: 67,
+//         price: 3299,
+//         originalPrice: 4999,
+//         savings: 1700,
+//         category: "men",
+//         ethnic: true,
+//         western: false,
+//         sizes: ['38', '40', '42', '44']
+//     }
+// ];
 
 const sortOptions = [
     "Featured",
@@ -186,14 +187,46 @@ const sortOptions = [
 ];
 
 const ShopPage = () => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const [activeCategory, setActiveCategory] = useState('ALL');
     const [sortOption, setSortOption] = useState('Featured');
     const [searchQuery, setSearchQuery] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [viewMode, setViewMode] = useState('grid');
     
     const dropdownRef = useClickOutside(() => setIsDropdownOpen(false));
     const itemPerPage = 8;
+
+    const { addToCart, toggleWishlist, isInWishlist } = useShop();
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/products');
+                const data = await response.json();
+                setProducts(data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    const handleAction = (action, product) => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        } else {
+            action(product);
+        }
+    };
 
     const categories = [
         { id: 'ALL', label: 'All', icon: <LayoutGrid size={16} /> },
@@ -204,7 +237,6 @@ const ShopPage = () => {
         { id: 'WESTERN', label: 'Western', icon: <Crown size={16} /> }
     ];
 
-    // Helper to dynamically calculate item counts per category
     const getCategoryCount = (catId) => {
         if (catId === 'ALL') return products.length;
         return products.filter(product => {
@@ -251,10 +283,18 @@ const ShopPage = () => {
         currentPage * itemPerPage
     );
 
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[50vh]">
+                <div className="w-12 h-12 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+                <p className="text-gray-500 font-bold">Loading latest collections...</p>
+            </div>
+        );
+    }
+
     return (
         <section className="w-full py-12 px-4 sm:px-8 lg:px-12 max-w-[1400px] mx-auto bg-[#fafafa] min-h-screen">
-            
-            {/* Top Header Section */}
+
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 border-b border-gray-200 pb-6">
                 <div>
                     <p className="text-orange-500 font-bold text-[10px] tracking-widest uppercase flex items-center gap-2 mb-2">
@@ -265,7 +305,6 @@ const ShopPage = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row items-center gap-4 mt-6 md:mt-0 w-full md:w-auto">
-                    {/* Search Bar */}
                     <div className="relative w-full sm:w-64">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Search size={16} className="text-gray-400" />
@@ -279,7 +318,7 @@ const ShopPage = () => {
                         />
                     </div>
 
-                    {/* Sort Dropdown */}
+
                     <div ref={dropdownRef} className="relative w-full sm:w-auto">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -316,10 +355,8 @@ const ShopPage = () => {
                 </div>
             </div>
 
-            {/* Main Layout Area */}
             <div className="flex flex-col lg:flex-row gap-10">
                 
-                {/* Left Sidebar */}
                 <div className="w-full lg:w-64 shrink-0">
                     <h3 className="text-[11px] font-bold text-orange-500 uppercase tracking-widest flex items-center gap-3 mb-6">
                         <span className="w-4 h-[2px] bg-orange-500"></span> Categories
@@ -349,7 +386,6 @@ const ShopPage = () => {
                         ))}
                     </div>
 
-                    {/* Filter Tip Card */}
                     <div className="bg-[#fff7f2] border border-orange-100 p-5 rounded-2xl flex flex-col items-start hidden lg:flex">
                         <div className="flex items-center gap-2 text-orange-500 font-bold text-xs uppercase tracking-widest mb-3">
                             <Lightbulb size={16} /> TIP
@@ -360,7 +396,6 @@ const ShopPage = () => {
                     </div>
                 </div>
 
-                {/* Right Product Grid */}
                 <div className="flex-grow">
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                         {paginatedProducts.length > 0 ? (
@@ -369,11 +404,12 @@ const ShopPage = () => {
                                     key={product.id} 
                                     className="bg-white rounded-2xl border border-gray-100 shadow-sm transition-all duration-300 overflow-hidden group hover:shadow-xl hover:border-orange-500 flex flex-col"
                                 >
-                                    <div className="relative bg-[#f4f2ee] aspect-[4/5] flex items-center justify-center overflow-hidden p-4">
-                                        <div 
-                                            className={`absolute top-4 left-0 ${product.badgeColor} text-white text-[10px] font-black tracking-wider px-3 py-1.5 z-10 shadow-sm`}
-                                            style={{ clipPath: 'polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%)' }}
-                                        >
+        
+                                    <Link 
+                                        to={`/product/${product._id}`} 
+                                        className={`relative bg-[#f4f2ee] flex items-center justify-center overflow-hidden ${viewMode === 'list' ? 'w-full md:w-[260px] h-[265px] shrink-0' : 'aspect-square p-4'} cursor-pointer block`}
+                                    >
+                                        <div className={`absolute top-4 left-0 ${product.badgeColor} text-white text-[10px] font-black tracking-wider px-3 py-1.5 z-10 shadow-sm`} style={{ clipPath: 'polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%)' }}>
                                             {product.badgeText}
                                         </div>
 
@@ -381,36 +417,32 @@ const ShopPage = () => {
                                             {product.discount}
                                         </div>
 
-                                        <button className="absolute right-4 bottom-[4.5rem] bg-white p-2 rounded-full shadow-md text-gray-400 hover:text-orange-500 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 translate-y-2 group-hover:translate-y-0">
-                                            <Heart size={16} strokeWidth={2.5} />
+                                        <button 
+                                            onClick={(e) => { e.preventDefault(); handleAction(toggleWishlist, product); }}
+                                            className="absolute right-4 bottom-[4.5rem] bg-white p-2 rounded-full shadow-md text-gray-400 hover:text-orange-500 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 translate-y-2 group-hover:translate-y-0"
+                                        >
+                                            <Heart size={16} strokeWidth={2.5} className={isInWishlist(product.id) ? "fill-current" : ""}/>
                                         </button>
-
-                                        <div className="absolute bottom-0 left-0 right-0 bg-[#222] text-white p-3 flex justify-center items-center transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 overflow-x-auto">
-                                            <div className="flex gap-2">
-                                                {product.sizes.map(size => (
-                                                    <button key={size} className="text-xs font-medium text-gray-300 border border-gray-600 hover:text-white hover:border-white px-2 py-1 rounded transition-colors whitespace-nowrap">
-                                                        {size}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
 
                                         <img 
                                             src={product.image} 
                                             alt={product.title} 
-                                            className="w-full h-full object-contain transition-transform duration-500 mix-blend-multiply group-hover:scale-105"
+                                            className={`w-full h-full object-contain transition-transform duration-500 mix-blend-multiply group-hover:scale-105 ${viewMode === 'list' ? 'p-6 aspect-[3/4]' : ''}`}
                                         />
-                                    </div>
+                                    </Link>
 
                                     <div className="p-5 flex flex-col flex-grow bg-white">
                                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                                             {product.brand}
                                         </span>
-                                        
-                                        <h3 className="text-sm font-bold text-gray-900 leading-tight mb-3 line-clamp-1">
+
+                                        <Link 
+                                            to={`/product/${product.id}`}
+                                            className={`${viewMode === 'list' ? 'text-lg' : 'text-sm'} font-bold text-gray-900 leading-tight mb-3 line-clamp-2 hover:text-orange-500 transition-colors block`}
+                                        >
                                             {product.title}
-                                        </h3>
-                                        
+                                        </Link>
+                                                                                
                                         <div className="inline-flex items-center self-start px-2 py-1 bg-orange-50 rounded text-[9px] font-semibold text-gray-600 border border-orange-100 mb-3">
                                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></span>
                                             {product.material}
@@ -457,7 +489,6 @@ const ShopPage = () => {
                         )}
                     </div>
 
-                    {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-center mt-12 space-x-2">
                             <button 

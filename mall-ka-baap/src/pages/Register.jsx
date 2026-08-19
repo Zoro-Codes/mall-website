@@ -7,13 +7,39 @@ import { useAuth } from '../context/AuthContext';
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { login } = useAuth();
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    login();
-    navigate('/');
+    setError('');
+    
+    if (password !== confirmPassword) {
+        return setError("Passwords do not match!");
+    }
+
+    setIsLoading(true);
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    const result = await register(fullName, email, password);
+    
+    if (result.success) {
+      navigate('/login');
+    } else {
+      setError(result.message);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -78,8 +104,14 @@ const Register = () => {
               Already have one? <Link to="/login" className="text-orange-500 hover:underline font-semibold">Sign in &rarr;</Link>
             </p>
 
-            <form className="space-y-5" onSubmit={handleRegister}>
+            {/* 3. Display Errors */}
+            {error && (
+              <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">
+                {error}
+              </div>
+            )}
 
+            <form className="space-y-5" onSubmit={handleRegister}>
               <div className="flex flex-col sm:flex-row space-y-5 sm:space-y-0 sm:space-x-4">
                 <div className="flex-1">
                   <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">First Name</label>
@@ -90,6 +122,8 @@ const Register = () => {
                     <input 
                       type="text" 
                       required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Uttam" 
                       className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                     />
@@ -104,6 +138,8 @@ const Register = () => {
                     <input 
                       type="text" 
                       required
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
                       placeholder="Gupta" 
                       className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                     />
@@ -120,6 +156,8 @@ const Register = () => {
                   <input 
                     type="email" 
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@email.com" 
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -134,6 +172,8 @@ const Register = () => {
                   </div>
                   <input 
                     type="tel" 
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 XXXXX XXXXX" 
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -149,6 +189,8 @@ const Register = () => {
                   <input 
                     type={showPassword ? "text" : "password"}
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Min 6 characters" 
                     className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -171,6 +213,8 @@ const Register = () => {
                   <input 
                     type={showConfirmPassword ? "text" : "password"}
                     required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repeat your password" 
                     className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -184,9 +228,19 @@ const Register = () => {
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-colors flex justify-center items-center group mt-2">
-                <Zap size={18} className="mr-2 fill-current" /> 
-                CREATE ACCOUNT &rarr;
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-colors flex justify-center items-center group mt-2 disabled:opacity-70"
+              >
+                {isLoading ? (
+                    "CREATING ACCOUNT..."
+                ) : (
+                    <>
+                        <Zap size={18} className="mr-2 fill-current" /> 
+                        CREATE ACCOUNT &rarr;
+                    </>
+                )}
               </button>
             </form>
 

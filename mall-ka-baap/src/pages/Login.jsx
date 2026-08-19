@@ -6,13 +6,28 @@ import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    login();
-    navigate('/');
+    setError('');
+    setIsLoading(true);
+
+    const result = await login(email, password);
+    
+    if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.message);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -77,6 +92,12 @@ const Login = () => {
               Don't have an account? <Link to="/register" className="text-orange-500 hover:underline font-semibold">Sign up free &rarr;</Link>
             </p>
 
+            {error && (
+              <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm text-center">
+                {error}
+              </div>
+            )}
+
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Email Address</label>
@@ -87,6 +108,8 @@ const Login = () => {
                   <input 
                     type="email" 
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com" 
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -105,6 +128,8 @@ const Login = () => {
                   <input 
                     type={showPassword ? "text" : "password"}
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password" 
                     className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-300 bg-transparent focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-colors text-sm"
                   />
@@ -118,9 +143,19 @@ const Login = () => {
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-colors flex justify-center items-center group">
-                <Zap size={18} className="mr-2 fill-current" /> 
-                SIGN IN &rarr;
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-xl transition-colors flex justify-center items-center group disabled:opacity-70"
+              >
+                {isLoading ? (
+                    "SIGNING IN..."
+                ) : (
+                    <>
+                        <Zap size={18} className="mr-2 fill-current" /> 
+                        SIGN IN &rarr;
+                    </>
+                )}
               </button>
             </form>
 

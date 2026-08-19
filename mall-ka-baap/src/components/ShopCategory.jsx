@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const categories = [
   {
@@ -119,9 +120,10 @@ const ShopCategory = () => {
 
       <div className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {paginatedCategories.map((cat) => (
-          <div 
-            key={cat.id} 
-            className="group relative h-[280px] md:h-[320px] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-300"
+          <Link 
+              to="/shop"
+              key={cat.id} 
+              className="group relative h-[280px] md:h-[320px] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-300 block"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-[#fff5f0] via-[#ffdccc] to-[#f97316] opacity-90 group-hover:opacity-100 transition-opacity z-0"></div>
 
@@ -144,7 +146,7 @@ const ShopCategory = () => {
                 Shop Now <ArrowRight size={12} className="ml-1 transition-transform group-hover:translate-x-1" />
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
